@@ -1,0 +1,38 @@
+#!/bin/bash
+#	
+#	Configura proxy para apt-get
+#	selecionando proxy informado através de parâmetros
+#	
+ajuda(){
+echo "
+Utilize $0 <http://proxy.dominio:porta | noproxy>
+"
+}
+if [ "$(whoami)" != "root" ] 
+then
+echo "Precisa executar script como root."
+exit 0
+fi
+if [ $# -eq 0 ] 
+then
+ajuda
+exit 0
+fi
+case $1 in
+"noproxy")
+[ -f /etc/apt/apt.conf.d/30proxy ] && sed -i 's/^/#/' /etc/apt/apt.conf.d/30proxy
+[ -f /etc/apt/apt.conf ] && [ $(grep -Eq "Aquire|proxy" /etc/apt/apt.conf) ] && rm /etc/apt/apt.conf
+;;
+
+*)
+(
+cat <<EOT
+Acquire::{
+	http::Proxy "$1/";
+	ftp::Proxy "$1/";
+	https::Proxy "$1/";
+}
+EOT
+) > /etc/apt/apt.conf.d/30proxy
+;;
+esac
