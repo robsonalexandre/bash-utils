@@ -1,0 +1,8 @@
+#!/bin/bash
+#	
+#	
+scriptPath=${0%/*}
+for function in $scriptPath/functions/*
+do
+source $function
+done

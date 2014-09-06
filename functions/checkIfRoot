@@ -1,0 +1,10 @@
+#!/bin/bash
+checkIfRoot(){
+if [ "$(whoami)" != "root" ] 
+then
+echo "
+Precisa executar script como root.
+"
+exit 0
+fi
+}
